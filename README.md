@@ -1,6 +1,6 @@
 # Fine-grained approach to fault localization without test oracle: A series of techniques and empirical studies
 ## Experimental Data
-Source test case in data
+Test case in data
 ## Experimental Program
 Source program in Program (Mutants and MRs)
 ## Environment
