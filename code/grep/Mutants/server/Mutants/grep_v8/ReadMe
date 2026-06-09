@@ -1,0 +1,9 @@
+File name : > /home/ssi/abarus/source/grep_Mutation/grep_mutant104/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : <
+Modified line# : 7607
+Before Modified :   for (i = 0; i < s->nelem; ++i)
+
+After Modified :   for (i = 0; i >= s->nelem; ++i)
+
+Created by : Arlinta Christy Barus

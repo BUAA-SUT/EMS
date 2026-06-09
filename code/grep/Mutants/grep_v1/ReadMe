@@ -1,0 +1,8 @@
+Category : ==
+Modified line# : 7156
+
+Before Modified : 	  if (backslash != ((syntax_bits & RE_NO_BK_PARENS) == 0))
+
+After Modified : 	  if (backslash != ((syntax_bits & RE_NO_BK_PARENS) != 0))
+
+Created by : Ren Daixu

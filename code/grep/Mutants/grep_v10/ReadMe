@@ -1,0 +1,9 @@
+File name : > /home/ssi/abarus/source/grep_Mutation/grep_mutant137/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : <
+Modified line# : 8162
+Before Modified : 	  for (k = 0; k < CHARCLASS_INTS; ++k)
+
+After Modified : 	  for (k = 0; k >= CHARCLASS_INTS; ++k)
+
+Created by : Arlinta Christy Barus

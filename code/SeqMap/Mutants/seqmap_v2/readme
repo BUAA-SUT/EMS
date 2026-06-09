@@ -1,0 +1,10 @@
+seqmap_v2
+@@ -572,7 +572,7 @@
+        int i, j;
+        for (i = 0; i < 65536; i++) {
+-            for (j = 0; j < 4; j++) {
++            for (j = 0; j == 4; j++) {
+                int64 submask = ((masks[0] >> (j * 16)) & 65535);
+                mask0_table[i][j] = shift_key(i, submask);
+            }
+        }

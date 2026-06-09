@@ -1,0 +1,9 @@
+PrimeCount_v14
+@@ -456,7 +456,7 @@
+ 
+     for (i = 1; PRIME_PRODUCT % pattern[i] == 0; i ++) {
+         const int p = pattern[i];
+-        for (uint offset = p; offset < sizeof(PreSieved) * WHEEL30; offset += p * 2)
++        for (uint offset = p; offset < sizeof(PreSieved) / WHEEL30; offset += p * 2)
+             PreSieved[offset / WHEEL30] |= WheelInit30[offset % WHEEL30].MaskBit;
+     }

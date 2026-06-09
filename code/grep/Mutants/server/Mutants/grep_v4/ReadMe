@@ -1,0 +1,9 @@
+File name : > /home/ssi/abarus/source/grep_Mutation/grep_mutant56/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : <
+Modified line# : 7425
+Before Modified :   for (i = 0; i < ntokens; ++i)
+
+After Modified :   for (i = 0; i >= ntokens; ++i)
+
+Created by : Arlinta Christy Barus

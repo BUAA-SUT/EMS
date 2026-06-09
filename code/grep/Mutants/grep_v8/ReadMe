@@ -1,0 +1,9 @@
+File name : > /home/ssi/abarus/source/grep_Mutation/grep_mutant130/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : <
+Modified line# : 8003
+Before Modified : 	if (d->follows[i].nelem < merged.nelem)
+
+After Modified : 	if (d->follows[i].nelem > merged.nelem)
+
+Created by : Arlinta Christy Barus

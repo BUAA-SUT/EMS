@@ -1,0 +1,10 @@
+PrimeCount_v2
+@@ -1277,7 +1277,7 @@
+ 
+     //pack the last byte with bit 1
+     if (bits % CHAR_BIT != 0)
+-        bitarray[bits / CHAR_BIT] |= ~((1 << (bits % CHAR_BIT)) - 1);
++        bitarray[bits % CHAR_BIT] |= ~((1 << (bits % CHAR_BIT)) - 1);
+ }
+ 
+ //sieve prime multiples in [start, start + sieve_size) with small algorithm

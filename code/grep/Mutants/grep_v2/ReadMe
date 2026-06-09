@@ -1,0 +1,9 @@
+File name : >/home/ssi/abarus/source/grep_Mutation/grep_mutant23/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : ++
+Modified line# : 8788
+Before Modified :       ++j;
+
+After Modified :       --j;
+
+Created by : Arlinta Christy Barus

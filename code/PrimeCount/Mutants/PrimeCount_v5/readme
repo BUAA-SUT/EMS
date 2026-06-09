@@ -1,0 +1,10 @@
+PrimeCount_v5
+@@ -1384,7 +1384,7 @@
+     //pack last qword
+     if (bytes % sizeof(uint64)) {
+         memset(bitarray + bytes, ~0, sizeof(uint64));
+-        bytes += sizeof(uint64) - bytes % sizeof(uint64);
++        bytes = sizeof(uint64) - bytes % sizeof(uint64);
+     }
+ 
+     if (pcall && pcall->func) {

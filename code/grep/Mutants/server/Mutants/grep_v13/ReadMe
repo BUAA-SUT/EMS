@@ -1,0 +1,9 @@
+File name : > /home/ssi/abarus/source/grep_Mutation/grep_mutant133/ReadMe
+ Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : ==
+Modified line# : 7142
+Before Modified : 	  if (backslash != ((syntax_bits & RE_NO_BK_VBAR) == 0))
+
+After Modified : 	  if (backslash != ((syntax_bits & RE_NO_BK_VBAR) != 0))
+
+Created by : Arlinta Christy Barus

@@ -1,0 +1,9 @@
+File name : >/home/ssi/abarus/source/grep_Mutation/grep_mutant13/ReadMe
+Modified file# : /home/ssi/abarus/source/grep-2.5.1a/src/dfa.c
+Category : ==
+Modified line# : 8707
+Before Modified :   if (old == NULL)
+
+After Modified :   if (old != NULL)
+
+Created by : Arlinta Christy Barus

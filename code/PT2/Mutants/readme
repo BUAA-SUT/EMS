@@ -1,0 +1,28 @@
+对于现有数据，有些mutants运行不成功
+Mutant1 超时，跳过
+Mutant2 超时，跳过
+Mutant3 超时，跳过
+Mutant8 超时，跳过
+Mutant9 编码格式问题，跳过
+Mutant17 超时，跳过
+Mutant27 编码格式问题，跳过
+Mutant28 编码格式问题，跳过
+Mutant30 编码格式问题，跳过
+Mutant31 编码格式问题，跳过
+Mutant32 编码格式问题，跳过
+Mutant45 超时，跳过
+
+mutate rate不合适的mutants
+Mutant4 100.0
+Mutant29 100.0
+Mutant33 100.0
+Mutant35 100.0
+Mutant36 100.0
+Mutant41 0.0
+
+以下mutants全部为satisfied MG,但其实包含FALSE satisfied MG，
+从mutate rate也可以看出，他们的mutate rate并不为0
+10，11，12，16，19，20，23，24，34，39，42，43，44，46，47，48，49
+
+所以最终使用的mutants
+5，6，7，13，14，15，18，21，22，25，26，37，38，40

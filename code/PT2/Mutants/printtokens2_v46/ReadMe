@@ -1,0 +1,11 @@
+--- aprint_tokens2.c 0
++++ bprint_tokens2.c 0
+@@ -186,1 +186,1 @@
+-     { i++;                     /* case,hold the second " in buffer    */
++     { i--;                     /* case,hold the second " in buffer    */
+--
+Build Date: 20  4 2023
+Commit: 5965c74b
+LLVM Version: 14.0.6
+Mull Version: 0.20.0
+URL: https://github.com/mull-project/mull
