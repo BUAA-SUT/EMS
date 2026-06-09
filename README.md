@@ -141,4 +141,4 @@ If you use this code or data, please cite the paper above.
 
 ## 9. Contact
 
-For questions about the artifact, please open a GitHub issue or contact the corresponding author Huai Liu (<huailiu@swin.edu.au>).
+For questions about the artifact, please open a GitHub issue or contact the author Daixu Ren (<rendaixu@tiangong.edu.au>).
