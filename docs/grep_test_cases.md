@@ -18,42 +18,21 @@ of source test cases that satisfy that MR's structural constraint.
 
 ## Per-MR applicable test cases
 
-> **Note for Daixu**: please verify the counts below against the actual `code/grep/MRs/MR.py`
-> implementation and the `data/grep/testcases/` directory. The numbers below are placeholders
-> reflecting the per-MR structure constraints described in the paper. Replace each `???`
-> with the actual count from the experiment.
+MR5 and MR6 operate on patterns consisting entirely of individual characters (for shuffling
+into a class `[…]` or alternation `a|b|…` respectively). None of the 1,000 sampled patterns
+satisfy this strict constraint, so their applicable count is 0.
 
-| MR  | Structural constraint on source pattern         | Applicable test cases (out of 1,000) |
-|-----|-------------------------------------------------|--------------------------------------|
-| MR1 | Pattern contains a character class `[a-z]`      | ??? |
-| MR2 | Pattern contains an alternation `a\|b`          | ??? |
-| MR3 | Pattern contains an anchor `^` or `$`           | ??? |
-| MR4 | Pattern contains a `.` (any-character)          | ??? |
-| MR5 | Pattern contains a quantifier `*`               | ??? |
-| MR6 | Pattern contains a quantifier `+`               | ??? |
-| MR7 | Pattern contains a quantifier `?`               | ??? |
-| MR8 | Pattern contains a back-reference `\1`          | ??? |
-| MR9 | Pattern is a fixed string (no metacharacters)   | ??? |
-| MR10 | Pattern contains a Unicode character           | ??? |
-| MR11 | Pattern uses POSIX bracket class `[:alpha:]`   | ??? |
-| MR12 | (other constraint — see `MRs/MR.py`)           | ??? |
-
-## Verifying applicability counts locally
-
-The applicable subset for each MR can be regenerated as follows:
-
-```bash
-cd code/grep
-python -c "
-from MRs.MR import MR1, MR2, MR3, MR4, MR5, MR6, MR7, MR8, MR9, MR10, MR11, MR12
-import os, glob
-TC_DIR = '../../data/grep/testcases'
-test_cases = []
-for fp in sorted(glob.glob(os.path.join(TC_DIR, '*'))):
-    with open(fp) as f:
-        test_cases.append(f.read().strip().split())
-for i, MRClass in enumerate([MR1, MR2, MR3, MR4, MR5, MR6, MR7, MR8, MR9, MR10, MR11, MR12], 1):
-    cnt = sum(1 for tc in test_cases if MRClass().is_applicable(tc))
-    print(f'MR{i}: {cnt}')
-"
-```
+| MR   | Structural constraint on source pattern | Applicable test cases (out of 1,000) |
+|------|-----------------------------------------|--------------------------------------|
+| MR1  | Pattern contains a range character class `[\w-\w]` (e.g. `[a-z]`) | 861 |
+| MR2  | Pattern contains a range class `[\w-\w]` (same as MR1; expands to alternation) | 192 |
+| MR3  | Pattern contains a non-range character class `[\w*]` (e.g. `[abc]`) | 18 |
+| MR4  | Pattern contains a range class `[\w-\w]` (splits into two sub-ranges) | 174 |
+| MR5  | Pattern consists only of individual characters (no metacharacters) | 0 |
+| MR6  | Pattern consists only of individual characters (no metacharacters) | 0 |
+| MR7  | Pattern contains a range class `[\w-\w]` (shrinks upper bound by 1) | 776 |
+| MR8  | Pattern contains a range class `[\w-\w]` (extends upper bound by 1) | 753 |
+| MR9  | Any pattern (appends `\|[[:digit:]]`) | 782 |
+| MR10 | Pattern contains a normal literal with a quantifier candidate (`{1}` or `+`) | 381 |
+| MR11 | Pattern contains `\w`, `\W`, `[[:alnum:]]`, or `[^[:alnum:]]` | 2 |
+| MR12 | Pattern contains a normal literal (replaces each character with `.`) | 418 |
