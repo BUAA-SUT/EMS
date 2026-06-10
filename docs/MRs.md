@@ -20,14 +20,17 @@ program under test:
 
 | Program | MR implementation file |
 |---------|------------------------|
-| TSQ, DM, SMM, Tcas | `code/<program>/<program>_test.py` |
-| PT, PT2 | `code/<program>/TestCase.py` |
+| TSQ | `code/TSQ/TSQ.py` |
+| DM | `code/DM/DM.py` |
+| SMM | `code/SMM/SMM.py` |
+| Tcas | `code/Tcas/Tcas.py` |
+| PT, PT2 | `code/<program>/PT.py` or `PT2.py` |
 | PrimeCount, SeqMap | `code/<program>/genMR.py` |
 | grep | `code/grep/MRs/MR.py` |
 
 ---
 
-## How the 28 new MRs were validated
+## How the new MRs were validated
 
 For every newly-defined MR we performed the following quality-control steps:
 
@@ -45,75 +48,152 @@ For every newly-defined MR we performed the following quality-control steps:
 
 ## TSQ (Triangle area, 9 MRs)
 
-> Reused from Dong [33].
+> All 9 MRs reused from Dong [33] or Hui [44].
 
-| ID  | Constraint | Transformation | Output relation | Origin |
-|-----|------------|----------------|-----------------|--------|
-| MR1 | (a, b, c) is a valid triangle | Permute the three sides | f(t_s) = f(t_f) | [reused] |
-| MR2 | (a, b, c) is a valid triangle | Scale all sides by k > 0 | f(t_f) = k² · f(t_s) | [reused] |
-| MR3 | … | … | … | [reused] |
-| ... | (please fill in remaining MRs from `code/TSQ/TSQ_test.py`) | | | |
+Input: triangle with sides `(a, b, c)`. Output: area `f(a, b, c)`.
 
-> *(The remaining MRs follow the same template; their exact implementations can be read off
->   directly from `code/TSQ/TSQ_test.py`. We keep this table as a stub so the authors can
->   fill in the full prose once the artifact is finalized.)*
+| ID   | Constraint | Transformation | Output relation | Origin |
+|------|------------|----------------|-----------------|--------|
+| MR1  | Valid triangle `(a, b, c)` | Replace `a` with the median `a' = √(2b²+2c²−a²)`; keep `b`, `c` | f(a', b, c) = f(a, b, c) | [reused] |
+| MR2  | Valid triangle `(a, b, c)` | Replace `b` with the median `b' = √(2a²+2c²−b²)`; keep `a`, `c` | f(a, b', c) = f(a, b, c) | [reused] |
+| MR3  | Valid triangle `(a, b, c)` | Replace `c` with the median `c' = √(2a²+2b²−c²)`; keep `a`, `b` | f(a, b, c') = f(a, b, c) | [reused] |
+| MR4  | Valid triangle `(a, b, c)` | Apply MR1, then apply MR2 to the result | f(t_f) = f(t_s) | [reused] |
+| MR5  | Valid triangle `(a, b, c)` | Apply MR1, then apply MR3 to the result | f(t_f) = f(t_s) | [reused] |
+| MR6  | Valid triangle `(a, b, c)` | Apply MR2, then apply MR1 to the result | f(t_f) = f(t_s) | [reused] |
+| MR7  | Valid triangle `(a, b, c)` | Apply MR2, then apply MR3 to the result | f(t_f) = f(t_s) | [reused] |
+| MR8  | Valid triangle `(a, b, c)` | Apply MR3, then apply MR1 to the result | f(t_f) = f(t_s) | [reused] |
+| MR9  | Valid triangle `(a, b, c)` | Apply MR3, then apply MR2 to the result | f(t_f) = f(t_s) | [reused] |
 
 ---
 
 ## DM (Determinant, 10 MRs)
 
-> Reused from Dong [33] (8 MRs) + author-defined (2 MRs).
+> MR1–MR4 reused from Dong [33]. MR5–MR10 are [new] — each composes two of the basic MRs.
 
-| ID  | Constraint | Transformation | Output relation | Origin |
-|-----|------------|----------------|-----------------|--------|
-| MR1 | A is a square matrix | Swap two rows | det(A_f) = − det(A_s) | [reused] |
-| MR2 | A is a square matrix | Multiply one row by k | det(A_f) = k · det(A_s) | [reused] |
-| MR3 | A is a square matrix | Add k·row_i to row_j (i ≠ j) | det(A_f) = det(A_s) | [reused] |
-| ...  | *(see `code/DM/DM_test.py`)* | | | |
+Input: 3×3 matrix `A` (stored as a flat array). Output: det(A).
+
+| ID   | Constraint | Transformation | Output relation | Origin |
+|------|------------|----------------|-----------------|--------|
+| MR1  | Any square matrix `A` | Swap two rows (rows 1 and 2) | det(A_f) = −det(A_s) | [reused] |
+| MR2  | Any square matrix `A` | Subtract `k`·row₂ from row₁ (`k = 3`) | det(A_f) = det(A_s) | [reused] |
+| MR3  | Any square matrix `A` | Transpose: A_f = A^T | det(A_f) = det(A_s) | [reused] |
+| MR4  | det(A) ≠ 0 | Invert: A_f = A⁻¹ | det(A_f) = 1 / det(A_s) | [reused] |
+| MR5  | Any square matrix `A` | Apply MR1 then MR2 | det(A_f) = −det(A_s) | [new] |
+| MR6  | Any square matrix `A` | Apply MR2 then MR1 | det(A_f) = −det(A_s) | [new] |
+| MR7  | Any square matrix `A` | Apply MR1 then MR3 | det(A_f) = −det(A_s) | [new] |
+| MR8  | Any square matrix `A` | Apply MR3 then MR1 | det(A_f) = −det(A_s) | [new] |
+| MR9  | Any square matrix `A` | Apply MR2 then MR3 | det(A_f) = det(A_s) | [new] |
+| MR10 | Any square matrix `A` | Apply MR3 then MR2 | det(A_f) = det(A_s) | [new] |
 
 ---
 
 ## SMM (Sparse matrix multiplication, 15 MRs)
 
-> Reused from Dong [33].
+> MR1–MR9 reused from Dong [33]. MR10–MR15 are [new] — each composes two of the basic MRs.
 
-*(See `code/SMM/SMM_test.py` for the full set of 15 MRs — typical examples include
-distributivity, associativity, and identity laws of matrix multiplication.)*
+Input: matrix pair `(A, B)`. Output: product `C = A·B`.
+
+| ID   | Constraint | Transformation | Output relation | Origin |
+|------|------------|----------------|-----------------|--------|
+| MR1  | Matrices `(A, B)` with compatible dimensions | Transpose both: `(A_f, B_f) = (B^T, A^T)` | f(A_f, B_f) = f(A, B)^T | [reused] |
+| MR2  | Matrices `(A, B)` | Left-multiply `A` by row-swap matrix `P`: `A_f = P·A`, `B_f = B` | f(A_f, B_f) = P·f(A, B) | [reused] |
+| MR3  | Matrices `(A, B)` | Right-multiply `B` by row-swap matrix `P`: `A_f = A`, `B_f = B·P` | f(A_f, B_f) = f(A, B)·P | [reused] |
+| MR4  | Matrices `(A, B)` | Left-multiply `A` by scalar matrix `Q(3)`: `A_f = Q(3)·A`, `B_f = B` | f(A_f, B_f) = Q(3)·f(A, B) | [reused] |
+| MR5  | Matrices `(A, B)` | Right-multiply `B` by scalar matrix `Q(4)`: `A_f = A`, `B_f = B·Q(4)` | f(A_f, B_f) = f(A, B)·Q(4) | [reused] |
+| MR6  | Matrices `(A, B)` | Scale `A` by scalar 6: `A_f = 6·A`, `B_f = B` | f(A_f, B_f) = 6·f(A, B) | [reused] |
+| MR7  | Matrices `(A, B)` | Scale `B` by scalar 7: `A_f = A`, `B_f = 7·B` | f(A_f, B_f) = 7·f(A, B) | [reused] |
+| MR8  | Matrices `(A, B)` | Add identity to `A`: `A_f = A + I`, `B_f = B` | f(A_f, B_f) = f(A, B) + B | [reused] |
+| MR9  | Matrices `(A, B)` | Add identity to `B`: `A_f = A`, `B_f = B + I` | f(A_f, B_f) = A + f(A, B) | [reused] |
+| MR10 | Matrices `(A, B)` | Apply MR1 then MR2 | f(t_f) satisfies combined relation | [new] |
+| MR11 | Matrices `(A, B)` | Apply MR1 then MR3 | f(t_f) satisfies combined relation | [new] |
+| MR12 | Matrices `(A, B)` | Apply MR2 then MR1 | f(t_f) satisfies combined relation | [new] |
+| MR13 | Matrices `(A, B)` | Apply MR2 then MR3 | f(t_f) satisfies combined relation | [new] |
+| MR14 | Matrices `(A, B)` | Apply MR3 then MR1 | f(t_f) satisfies combined relation | [new] |
+| MR15 | Matrices `(A, B)` | Apply MR3 then MR2 | f(t_f) satisfies combined relation | [new] |
 
 ---
 
 ## Tcas (Aircraft conflict detection, 9 MRs)
 
-> 5 reused + 4 new.
+> All 9 MRs reused from Hui [44].
+>
 
-*(See `code/Tcas/Tcas_test.py`. Typical examples: symmetry of own/intruder roles, monotonicity
-of conflict-detection w.r.t. closing speed, etc.)*
+Input: 12-element vector `(Cur_Vertical_Sep, High_Confidence, Two_of_Three_Reports_Valid,
+Own_Tracked_Alt, Own_Tracked_Alt_Rate, Other_Tracked_Alt, Alt_Layer_Value,
+Up_Separation, Down_Separation, Other_RAC, Other_Capability, Climb_Inhibit)`.
+Output: advisory ∈ {UPWARD_RA, DOWNWARD_RA, UNRESOLVED}.
+
+| ID  | Transformation summary | Output relation | Origin |
+|-----|------------------------|-----------------|--------|
+| MR1 | Adjust own/intruder altitudes to equalise their relative position w.r.t. the midpoint, preserving advisory direction | f(t_f) = f(t_s) | [reused] |
+| MR2 | Adjust Up/Down separation to reinforce the current advisory direction | f(t_f) = f(t_s) | [reused] |
+| MR3 | Increment or decrement `Alt_Layer_Value` consistent with current advisory | f(t_f) = f(t_s) | [reused] |
+| MR4 | Apply MR1 then MR2 | f(t_f) = f(t_s) | [reused] |
+| MR5 | Apply MR1 then MR3 | f(t_f) = f(t_s) | [reused] |
+| MR6 | Apply MR2 then MR1 | f(t_f) = f(t_s) | [reused] |
+| MR7 | Apply MR3 then MR1 | f(t_f) = f(t_s) | [reused] |
+| MR8 | Apply MR2 then MR3 | f(t_f) = f(t_s) | [reused] |
+| MR9 | Apply MR3 then MR2 | f(t_f) = f(t_s) | [reused] |
 
 ---
 
 ## PT (Print_tokens, 11 MRs)
 
-> 8 reused from Hui [44] + 3 new.
+> MR1–MR3 reused from Hui [44]. MR4–MR9 are [new] (compositions). MR10–MR11 are [new]
+> (standalone).
+>
 
-*(See `code/PT/TestCase.py`.)*
+Input: source-code token stream (file). Output: token-type count vector.
+
+| ID   | Transformation | Output relation | Origin |
+|------|----------------|-----------------|--------|
+| MR1  | Randomly swap case of ~50% of lines | f(t_f) = f(t_s) | [reused] |
+| MR2  | Truncate each line at its first `;` (drop the trailing comment) | f(t_f) = f(t_s) | [reused] |
+| MR3  | Prepend `;` to ~50% of lines (comment them out) | f(t_f)[i] ≤ f(t_s)[i] for all token types i | [reused] |
+| MR4  | Apply MR1 then MR2 | f(t_f) = f(t_s) | [new] |
+| MR5  | Apply MR2 then MR1 | f(t_f) = f(t_s) | [new] |
+| MR6  | Apply MR1 then MR3 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR7  | Apply MR3 then MR1 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR8  | Apply MR2 then MR3 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR9  | Apply MR3 then MR2 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR10 | Duplicate ~10% of lines (append copies at end) | f(t_f)[i] ≥ f(t_s)[i] for all i | [new] |
+| MR11 | Remove ~10% of lines | f(t_f)[i] ≤ f(t_s)[i] for all i | [new] |
 
 ---
 
 ## PT2 (Print_tokens2, 11 MRs)
 
-> 8 reused from Hui [44] + 3 new.
+> Identical MR set to PT (same `PT2.py` implementation mirrors `PT.py`).
+>
+> ⚠️ Same confirmation needed as PT above.
 
-*(See `code/PT2/TestCase.py`.)*
+| ID   | Transformation | Output relation | Origin |
+|------|----------------|-----------------|--------|
+| MR1  | Randomly swap case of ~50% of lines | f(t_f) = f(t_s) | [reused] |
+| MR2  | Truncate each line at its first `;` | f(t_f) = f(t_s) | [reused] |
+| MR3  | Prepend `;` to ~50% of lines | f(t_f)[i] ≤ f(t_s)[i] | [reused] |
+| MR4  | Apply MR1 then MR2 | f(t_f) = f(t_s) | [new] |
+| MR5  | Apply MR2 then MR1 | f(t_f) = f(t_s) | [new] |
+| MR6  | Apply MR1 then MR3 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR7  | Apply MR3 then MR1 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR8  | Apply MR2 then MR3 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR9  | Apply MR3 then MR2 | f(t_f)[i] ≤ f(t_s)[i] | [new] |
+| MR10 | Duplicate ~10% of lines | f(t_f)[i] ≥ f(t_s)[i] | [new] |
+| MR11 | Remove ~10% of lines | f(t_f)[i] ≤ f(t_s)[i] | [new] |
 
 ---
 
 ## PrimeCount (Prime-counting function, 3 MRs)
 
+> All 3 MRs reused.
+
+Input: integer `n ≥ 2`. Output: π(n) = number of primes ≤ n.
+
 | ID  | Constraint | Transformation | Output relation | Origin |
 |-----|------------|----------------|-----------------|--------|
-| MR1 | n ≥ 2 | t_f = 2 · t_s | π(t_f) ≥ π(t_s) | [new] |
-| MR2 | n ≥ 2 | t_f = t_s + 1 | π(t_f) − π(t_s) ∈ {0, 1} | [new] |
-| MR3 | n ≥ 2 | t_f = n² | π(t_f) ≥ π(t_s) | [new] |
+| MR1 | n ≥ 2 | t_f = t_s + k, k ~ Uniform(1, 99) | π(t_f) ≥ π(t_s) | [reused] |
+| MR2 | n ≥ 2 | t_f = t_s + 1 | π(t_f) − π(t_s) ∈ {0, 1} | [reused] |
+| MR3 | n ≥ 2 | t_f = t_s + y, y ~ Uniform(1, t_s); also generate follow t_f₂ = y | π(t_f) ≥ π(t_s) and π(t_f) ≥ π(y) | [reused] |
 
 *(See `code/PrimeCount/genMR.py` for the implementation.)*
 
@@ -121,21 +201,41 @@ of conflict-detection w.r.t. closing speed, etc.)*
 
 ## SeqMap (Sequence mapping, 3 MRs)
 
-*(See `code/SeqMap/genMR.py`. The MRs target the symmetry of complementary-strand mapping
-and the invariance of mapping under reverse-complement transformations.)*
+> All 3 MRs reused.
+
+Input: edit distance `e` (integer 0–4), target sequence `T` (list of strings), query sequence
+`p` (string). Output: alignment map `M`.
+
+| ID  | Constraint | Transformation | Output relation | Origin |
+|-----|------------|----------------|-----------------|--------|
+| MR1 | Any valid `(e, T, p)` | Randomly select a non-empty subset of sequences from `T` and append them to `p` | Output changes reflect the extended query | [reused] |
+| MR2 | `e` ∉ {0, 4} | Randomly change `e` to a different value in [0, 4] | Mapping result changes accordingly with the new edit tolerance | [reused] |
+| MR3 | `len(p) ≥ 4` | Randomly trim `p` from either the front or the back by 1 to `len(p)−1` characters | Trimmed query produces a subset of the original alignments | [reused] |
+
+*(See `code/SeqMap/genMR.py` for the implementation.)*
 
 ---
 
 ## grep (12 MRs)
 
-> All 12 MRs are implemented in `code/grep/MRs/MR.py` and reuse the formulation from
-> Dai [40] / Barus [42].
+> All 12 MRs reused from Dai [40] / Barus [42].
 
-| ID  | Constraint (source pattern) | Transformation | Output relation | Origin |
-|-----|-----------------------------|----------------|-----------------|--------|
-| MR1 | Pattern contains a character class `[a-z]` | Permute the characters inside the class | f(t_s) = f(t_f) | [reused] |
-| MR2 | Pattern contains an alternation `a\|b` | Swap the two branches | f(t_s) = f(t_f) | [reused] |
-| ...  | *(see `code/grep/MRs/MR.py` for the complete set, MR1 – MR12)* | | | |
+Input: regex pattern (string). Output: set of matching lines from target file.
+
+| ID   | Constraint | Transformation | Output relation | Origin |
+|------|------------|----------------|-----------------|--------|
+| MR1  | Pattern contains a range character class `[x-y]` | Randomly permute the characters inside the class | f(t_f) = f(t_s) | [reused] |
+| MR2  | Pattern contains a range class `[x-y]` | Expand range to explicit alternation `x\|x+1\|…\|y` | f(t_f) = f(t_s) | [reused] |
+| MR3  | Pattern contains a non-range character class `[xyz…]` | Expand each character to a singleton class `[x]\|[y]\|…` | f(t_f) = f(t_s) | [reused] |
+| MR4  | Pattern contains a range class `[x-y]` | Split the range into two adjacent sub-ranges `[x-m]\|[m+1-y]` | f(t_f) = f(t_s) | [reused] |
+| MR5  | Pattern is a set of individual characters | Reassemble as a character class `[…]` in random order | f(t_s) ⊆ f(t_f) | [reused] |
+| MR6  | Pattern is a set of individual characters | Reassemble as an alternation `a\|b\|…` in random order | f(t_s) ⊆ f(t_f) | [reused] |
+| MR7  | Pattern contains a range class `[x-y]` | Shrink range by removing its last character: `[x-(y−1)]` | f(t_f) ⊆ f(t_s) | [reused] |
+| MR8  | Pattern contains a range class `[x-y]` | Extend range by one character: `[x-(y+1)]` | f(t_s) ⊆ f(t_f) | [reused] |
+| MR9  | Any pattern | Append `\|[[:digit:]]` to the pattern | f(t_s) ⊆ f(t_f) | [reused] |
+| MR10 | Pattern contains a normal literal | Append a quantifier (`{1}` or `+`) to the literal | f(t_f) = f(t_s) | [reused] |
+| MR11 | Pattern contains `\w`, `\W`, `[[:alnum:]]`, or `[^[:alnum:]]` | Replace with its complement class | f(t_f) verified against word-count file | [reused] |
+| MR12 | Pattern contains a normal literal | Replace each character of the literal with `.` (match-any) | f(t_s) ⊆ f(t_f) | [reused] |
 
 The number of source test cases (out of the 1 000 sampled) that satisfy each grep MR's
 constraint is summarised in [`grep_test_cases.md`](grep_test_cases.md).
