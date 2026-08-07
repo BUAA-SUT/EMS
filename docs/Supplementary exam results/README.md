@@ -7,7 +7,7 @@ therefore, a lower EXAM value indicates better fault-localization effectiveness.
 
 ## Results under different weighting strategies
 
-![EXAM results under different weighting strategies](EXAM_results_under_different_weighting_strategies.emf)
+![EXAM results under different weighting strategies](EXAM_results_under_different_weighting_strategies.png)
 
 **Figure 1. EXAM results under different weighting strategies and weight values.**
 
@@ -19,7 +19,7 @@ set for fault localization.
 
 ## Results over the expanded weight range
 
-![EXAM results over the expanded weight range](EXAM_results_over_expanded_weight_range.emf)
+![EXAM results over the expanded weight range](EXAM_results_over_expanded_weight_range.png)
 
 **Figure 2. EXAM results under `ims` and `dms` over the expanded weight range.**
 
